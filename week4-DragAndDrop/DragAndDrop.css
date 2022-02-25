@@ -1,0 +1,87 @@
+body {
+  width: 1400px;
+  height: fit-content;
+  margin: auto;
+  background-color: blanchedalmond;
+}
+
+header {
+  background-color: blanchedalmond;
+  height: 100px;
+  width: 100%;
+}
+h1 {
+  display: inline-block;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+.button {
+  width: 100px;
+  height: 75px;
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 15px;
+}
+#timer {
+  float: right;
+  font-size: 40px;
+  line-height: 100px;
+}
+
+main {
+  width: 80%;
+  height: fit-content;
+  margin: 0;
+  float: left;
+}
+
+article {
+  background-color: whitesmoke;
+  width: 100%;
+  height: 200px;
+  display: flex;
+  flex-wrap: nowrap;
+}
+.pae {
+  display: inline-block;
+  background-color: white;
+  background-size: 80px 120px;
+  width: 80px;
+  height: 120px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 40px;
+}
+
+aside {
+  background-color: cornsilk;
+  width: 20%;
+  height: 400px;
+  float: left;
+}
+#rankBox {
+  padding: 10px 0px 10px 20px;
+}
+.rankClass {
+  display: inline-block;
+  width: 50px;
+}
+.nickClass {
+  display: inline-block;
+  width: 120px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-box-clamp: 1;
+  margin-bottom: -4px;
+}
+.timeClass {
+  display: inline-block;
+  width: 70px;
+}
+
+footer {
+  background-color: blanchedalmond;
+  line-height: 40px;
+  padding-left: 10px;
+}

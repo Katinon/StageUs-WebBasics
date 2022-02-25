@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <title>DragAndDrop</title>
+    <link rel="stylesheet" type="text/css" href="DragAndDrop.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Drag And Drop</h1>
+      <input id="start" class="button" type="button" value="시작" onclick="start()" />
+      <input id="submit" class="button" type="button" value="제출" onclick="submit()" />
+      <input id="reset" class="button" type="button" value="초기화" onclick="reset()" />
+      <span id="timer">0분 0초</span>
+    </header>
+
+    <main>
+      <article class="imgBox">
+        <div class="pae" draggable="true" ondragstart="onDragStart(0)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(1)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(2)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(3)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(4)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(5)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(6)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(7)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(8)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(9)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(10)"></div>
+        <div class="pae" draggable="true" ondragstart="onDragStart(11)"></div>
+      </article>
+      <article class="imgBox">
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(12)" ondragover="onDragOver(event)" ondrop="onDrop(12)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(13)" ondragover="onDragOver(event)" ondrop="onDrop(13)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(14)" ondragover="onDragOver(event)" ondrop="onDrop(14)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(15)" ondragover="onDragOver(event)" ondrop="onDrop(15)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(16)" ondragover="onDragOver(event)" ondrop="onDrop(16)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(17)" ondragover="onDragOver(event)" ondrop="onDrop(17)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(18)" ondragover="onDragOver(event)" ondrop="onDrop(18)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(19)" ondragover="onDragOver(event)" ondrop="onDrop(19)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(20)" ondragover="onDragOver(event)" ondrop="onDrop(20)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(21)" ondragover="onDragOver(event)" ondrop="onDrop(21)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(22)" ondragover="onDragOver(event)" ondrop="onDrop(22)"></div>
+        <div class="pae paeResult" draggable="true" ondragstart="onDragStart(23)" ondragover="onDragOver(event)" ondrop="onDrop(23)"></div>
+      </article>
+    </main>
+
+    <aside id="aside">
+      <h2>Ranking</h2>
+      <p>등수는 10개까지 표시됩니다.</p>
+      <input id="inputName" type="text" value="userName" />
+      <span id="inputTimer">0m 0s</span>
+      <input id="inputBtn" type="button" value="등록" onclick="registerRank()" />
+      <div id="rankBox"></div>
+    </aside>
+
+    <footer>
+      - 시작 버튼을 누르면 12장의 패가 첫줄에 랜덤으로 생성됩니다.<br />
+      - 각각의 패를 순서대로 두번째 줄에 넣고, 제출하여야 합니다.<br />
+      - 제출한 답이 오답이라면 틀린 갯수가 주어집니다.<br />
+      - 랭킹을 등록할 수 있으며, 10등 이하의 기록은 반영되지 않습니다.
+    </footer>
+
+    <script>
+      var myPaeDiv = document.getElementsByClassName("pae");
+      var resultPaeDiv = document.getElementsByClassName("paeResult");
+      var backImg = null; //dragStart 실행하면 start 이미지 저장됨
+      var startIdx = null; //result의 두 이미지 바꿀 수 있게 처음의 idx 저장
+      var timer = 0;
+      var min = 0;
+      var sec = 0;
+      var rankArr = [];
+      var isPae; //랜덤 패 생성할 때 필요한 boolean 배열
+      var isRegister = 0; //등록하면 1로 바꿈, 중복등록 방지용
+      var isClear = 0; //클리어 전에는 랭킹등록 불가능
+
+      function onDragStart(num) {
+        startIdx = num;
+        backImg = myPaeDiv[num].style.backgroundImage;
+      } //두 이미지 바꿀 수 있게 idx 저장, 백이미지 저장
+
+      function onDragOver(event) {
+        event.preventDefault();
+      } //이벤트처리
+
+      function onDrop(num) {
+        if (startIdx >= 12) {
+          myPaeDiv[startIdx].style.backgroundImage = myPaeDiv[num].style.backgroundImage;
+        }
+        myPaeDiv[num].style.backgroundImage = backImg;
+      } // resultDiv라면, 이미지 바꿀 수 있는 로직
+
+      function start() {
+        timer = 0;
+        document.getElementById("timer").innerText = 0 + "분 " + 0 + "초";
+        isPae = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+        // 마스킹 기법  랜덤패가 있는지 검사하는 배열 초기화
+        for (var i = 0; i < 12; i++) {
+          resultPaeDiv[i].style.backgroundImage = "";
+        } //패의 결과값 초기화
+
+        timerStart();
+
+        for (var i = 0; i < 12; i++) {
+          var randomNum = Math.floor(Math.random() * 12);
+          while (isPae[randomNum]) randomNum = Math.floor(Math.random() * 12);
+          //   while (isPae[randomNum]) randomNum = ++randomNum % 12;
+          // 해쉬 기법, 랜덤수 생성에 적합하진 않음 -> 시간복잡도 크더라도 재생성, 로그 찍으니까 20번~50번 사이
+          isPae[randomNum] = 1;
+          myPaeDiv[i].style.backgroundImage = "url(PNG/pae" + randomNum + ".png)";
+        }
+      } //타이머 가동, 랜덤넘버 지정, url 지정하여 백그라운드이미지 삽입
+
+      function submit() {
+        var wrongCnt = 0; //틀린 갯수 카운트
+
+        for (var i = 0; i < 12; i++) {
+          var rightBackImgUrl = 'url("PNG/pae' + i + '.png")';
+          if (resultPaeDiv[i].style.backgroundImage != rightBackImgUrl) ++wrongCnt;
+        } //배치한 패의 backImg와 정답 비교하여 틀린 답 카운트
+
+        if (wrongCnt == 0) {
+          isClear = 1; //클리어 플래그, 랭킹등록 가능하게함
+          alert("정답입니다!");
+          timerStop();
+          document.getElementById("inputTimer").innerText = min + "m " + sec + "s";
+        } else {
+          alert("오답입니다!\n틀린 갯수 : " + wrongCnt);
+        }
+      }
+
+      function reset() {
+        isClear = 0;
+        isRegister = 0;
+        min = sec = 0;
+        timerStop();
+        document.getElementById("timer").innerText = 0 + "분 " + 0 + "초";
+        document.getElementById("inputTimer").innerText = min + "m " + sec + "s";
+
+        for (var i = 0; i < 24; i++) {
+          myPaeDiv[i].style.backgroundImage = "";
+        }
+      } //타이머 스톱, 백그라운드 이미지 초기화
+
+      function registerRank() {
+        if (!isClear) return; //플레이하지 않으면 입력불가
+        if (isRegister) {
+          alert("이미 등록했습니다.");
+          return;
+        }
+
+        var submitNick = document.getElementById("inputName").value;
+        var submitTimer = 60 * min + sec;
+        isRegister = 1;
+
+        rankArr[submitNick] = submitTimer; //sec로 변환하여 배열 입력
+        rankArr.push([submitNick, submitTimer]);
+
+        if (rankArr.length > 1)
+          rankArr.sort(function (a, b) {
+            return a[1] - b[1];
+          });
+        //sort는 크기가 2미만이면 동작x
+        document.getElementById("rankBox").remove();
+        var newRankBox = document.createElement("div");
+        newRankBox.id = "rankBox";
+
+        for (var i = 0; i < rankArr.length; i++) {
+          if (i >= 10) break; //등수는 10개까지만 표시
+          var newDiv = document.createElement("div");
+          var newRank = document.createElement("span");
+          var newNick = document.createElement("span");
+          var newTime = document.createElement("span");
+
+          newRank.className = "rankClass";
+          newNick.className = "nickClass";
+          newTime.className = "timeClass";
+
+          var rankText = i + 1 == 1 ? "st" : i + 1 == 2 ? "nd" : i + 1 == 3 ? "rd" : "th";
+          //현업에서는  가독성을 위해 잘쓰진 않음 간단한 식에만 사용하는 게 주 방법
+          newRank.innerText = i + 1 + rankText;
+          newNick.innerText = rankArr[i][0] + " ";
+          newTime.innerText = Math.floor(rankArr[i][1] / 60) + "m " + (rankArr[i][1] % 60) + "s ";
+          newDiv.append(newRank, newNick, newTime);
+          newRankBox.appendChild(newDiv);
+        }
+        document.getElementById("aside").appendChild(newRankBox);
+      }
+
+      function timerStart() {
+        clickedTime = new Date().getTime();
+        timer = setInterval(function () {
+          var nowTime = new Date().getTime();
+          var newTime = new Date(nowTime - clickedTime);
+
+          min = newTime.getMinutes();
+          sec = newTime.getSeconds();
+          document.getElementById("timer").innerText = min + "분 " + sec + "초";
+        }, 1000);
+      }
+
+      function timerStop() {
+        clearInterval(timer);
+      }
+      //asdf
+    </script>
+  </body>
+</html>
+
+<!-- 드래그앤드랍 게임
+
+윗쪽에 9칸 만들고 (1~9)
+아랫쪽에 9칸
+
+시작을 누르면 랜덤으로 윗줄에 숫자 1~9 넣어짐
+하나씩 드래그앤드랍으로 해서 순서 맞추기
+
+내렸을때 예외처리, 올렸을 때 예외처리
+
+밑 칸도 ex>  두번째 칸에 1 넣었음, 실수했으니 옆 칸으로.
+옆 칸으로 갔을 때 숫자가 있으면 위치가 바뀌어야 함
+
+시작 눌렀을 때 타이머 체크, 완성했을 때 타이머 중지, 시간 출력 밀리세컨드 없이 몇분 몇초
+랭킹시스템도 심심하면 만들어보기 -->
+
+<!-- 
+//피드백
+옮겼을때 흑백처리나 같은 패 예외처리 하면 좋음
+가운데를 main으로 묶고, section 과 aside로 나누기
+html body에서 각각의 패 반복문으로 묶을 수 있음  어캐했지;;;;
+
+dragEnter(e) { ev.target.style.color = 'blue'}
+e.target.style.color = "blue" 매개변수를 따로 받지 않고도 이벤트 자체로 접근할 수 있음-->
